@@ -1,0 +1,23 @@
+<div class="root">
+  <div class="task-board">
+    <div class="task-header">
+      <div class="task-name">{{ board.name }}</div>
+      <a href="#" class="add-list" (click)="addList()">+ Add another list</a>
+    </div>
+    <div class="task-container">
+      <div class="task-columns" cdkDropListGroup>
+        <div class="task-column" *ngFor="let column of board.columns">
+          <div class="column-title">
+            {{ column.name }}
+          </div>
+          <div class="tasks-container" cdkDropList [cdkDropListData]="column.tasks" (cdkDropListDropped)="drop($event)">
+            <div class="task" *ngFor="let item of column.tasks" cdkDrag>
+              {{ item }}
+            </div>
+          </div>
+          <a class="add-task" href="javascript:;" (click)="addTask(column.name)">+ Add Task</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
