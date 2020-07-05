@@ -2,22 +2,88 @@
   <div class="task-board">
     <div class="task-header">
       <div class="task-name">{{ board.name }}</div>
-      <a href="#" class="add-list" (click)="addList()">+ Add another list</a>
+      <a href="#" class="add-list" (click)="openModal(addListModel, 'list')">+ Add another list</a>
     </div>
     <div class="task-container">
       <div class="task-columns" cdkDropListGroup>
         <div class="task-column" *ngFor="let column of board.columns">
           <div class="column-title">
-            {{ column.name }}
+            <div class="column-name"> {{ column.name }} </div>
+            <a class="deleteBtn" href="javascript:;" (click)="openDeleteModel(deleteConfirmationList, column.name,'')">&times;</a>
           </div>
           <div class="tasks-container" cdkDropList [cdkDropListData]="column.tasks" (cdkDropListDropped)="drop($event)">
-            <div class="task" *ngFor="let item of column.tasks" cdkDrag>
-              {{ item }}
+            <div class="task" *ngFor="let item of column.tasks; let i = index" cdkDrag>
+              <div class="taskName">{{ item }}</div>
+              <a class="deleteBtn" href="javascript:;" (click)="openDeleteModel(deleteConfirmationModel, column.name, item)">&times;</a>
             </div>
           </div>
-          <a class="add-task" href="javascript:;" (click)="addTask(column.name)">+ Add Task</a>
+          <a class="add-task" href="javascript:;" (click)="openModal(addCardModel, 'card', column.name)">+ Add a card</a>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- add card model -->
+<ng-template #addCardModel>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Add a card</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form id="addCardForm" (ngSubmit)="addCard()">
+      <div class="form-group">
+        <label for="cardName">Card Name</label>
+        <input type="text" class="form-control" required (blur)="checkName('card')" [(ngModel)]="cardNameInput" name="cardNameInput" autofocus>
+        <div *ngIf="cardNameError !==''" class="formError">{{cardNameError}}</div>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</ng-template>
+
+<!-- delete card model -->
+<ng-template #deleteConfirmationModel>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Delete card</h4>
+  </div>
+  <div class="modal-body">
+    <div class="mb-4">Do you really want to delete this card?</div>
+    <button type="button" class="btn btn-primary mr-2" (click)="deleteCard(deleteData)">Yes</button>
+    <button type="button" class="btn btn-primary mr-2" (click)="modalRef.hide()">No</button>
+  </div>
+</ng-template>
+
+<!-- add list model -->
+<ng-template #addListModel>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Add a list</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form id="addCardForm" (ngSubmit)="addList()">
+      <div class="form-group">
+        <label for="cardName">List Name</label>
+        <input type="text" class="form-control" required (blur)="checkName('list')" [(ngModel)]="listNameInput" name="listNameInput" autofocus>
+        <div *ngIf="listNameError !==''" class="formError">{{listNameError}}</div>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</ng-template>
+
+<!-- delete list model -->
+<ng-template #deleteConfirmationList>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Delete list</h4>
+  </div>
+  <div class="modal-body">
+    <div class="mb-4">Do you really want to delete this list?</div>
+    <button type="button" class="btn btn-primary mr-2" (click)="deleteList(deleteData)">Yes</button>
+    <button type="button" class="btn btn-primary mr-2" (click)="modalRef.hide()">No</button>
+  </div>
+</ng-template>
